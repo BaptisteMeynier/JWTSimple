@@ -4,13 +4,14 @@ import java.io.IOException;
 import java.security.Key;
 import java.util.logging.Logger;
 
-import javax.crypto.KeyGenerator;
 import javax.inject.Inject;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+
+import org.javaee7.auth.jwt.simple.utils.KeyGenerator;
 
 import io.jsonwebtoken.Jwts;
 

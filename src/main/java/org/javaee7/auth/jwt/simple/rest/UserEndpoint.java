@@ -1,7 +1,5 @@
 package org.javaee7.auth.jwt.simple.rest;
 
-
-import javax.crypto.KeyGenerator;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -13,6 +11,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.javaee7.auth.jwt.simple.domain.User;
+import org.javaee7.auth.jwt.simple.utils.KeyGenerator;
 import org.javaee7.auth.jwt.simple.utils.PasswordUtils;
 
 import io.jsonwebtoken.Jwts;
@@ -64,6 +63,7 @@ public class UserEndpoint {
     public Response authenticateUser(@FormParam("login") String login,
                                      @FormParam("password") String password) {
 
+    	
         try {
 
             logger.info("#### login/password : " + login + "/" + password);

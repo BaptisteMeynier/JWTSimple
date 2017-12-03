@@ -20,6 +20,9 @@
 		<version.org.jboss.arquillian>1.1.14.Final</version.org.jboss.arquillian>
 		<version.org.wildfly>8.2.1.Final</version.org.wildfly>
 		<version.junit>4.12</version.junit>
+		<version.resteasy>3.0.18.Final</version.resteasy>
+		<version.jersey>2.23.2</version.jersey>
+		<version.json>1.0.4</version.json>
 	</properties>
 
 
@@ -31,6 +34,13 @@
 				<version>${version.org.jboss.arquillian}</version>
 				<scope>import</scope>
 				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-bom</artifactId>
+				<version>${version.resteasy}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -48,12 +58,32 @@
 			<artifactId>jjwt</artifactId>
 			<version>${version.jjwt}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-client</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>4.4.8</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.2</version>
+		</dependency>
 
 		<!-- TEST -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${version.junit}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -72,7 +102,7 @@
 	<profiles>
 		<!-- Arquillian WildFly managed profile -->
 		<profile>
-			<id>arq-wildfly-managed</id>
+			<id>arquillian-wildfly-managed</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
@@ -133,6 +163,5 @@
 		</profile>
 
 	</profiles>
-
 
 </project>

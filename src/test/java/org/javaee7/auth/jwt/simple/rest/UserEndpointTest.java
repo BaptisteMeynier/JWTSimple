@@ -2,7 +2,9 @@ package org.javaee7.auth.jwt.simple.rest;
 
 import org.javaee7.auth.jwt.simple.domain.User;
 import org.javaee7.auth.jwt.simple.producer.LoggerProducer;
+import org.javaee7.auth.jwt.simple.utils.KeyGenerator;
 import org.javaee7.auth.jwt.simple.utils.PasswordUtils;
+import org.javaee7.auth.jwt.simple.utils.SimpleKeyGenerator;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -16,7 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.crypto.KeyGenerator;
+
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
@@ -69,7 +71,7 @@ public class UserEndpointTest {
 
         return ShrinkWrap.create(WebArchive.class)
                 .addClasses(User.class, UserEndpoint.class)
-                .addClasses(PasswordUtils.class, KeyGenerator.class, LoggerProducer.class)
+                .addClasses(PasswordUtils.class, KeyGenerator.class, SimpleKeyGenerator.class, LoggerProducer.class, UserApplicationConfig.class)
                 .addAsResource("META-INF/persistence-test.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsLibraries(files);
