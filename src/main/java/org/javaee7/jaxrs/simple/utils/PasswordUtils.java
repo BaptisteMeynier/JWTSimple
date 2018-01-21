@@ -1,4 +1,4 @@
-package org.javaee7.auth.jwt.simple.utils;
+package org.javaee7.jaxrs.simple.utils;
 
 import java.security.MessageDigest;
 import java.util.Base64;

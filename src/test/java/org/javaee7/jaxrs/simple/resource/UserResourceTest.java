@@ -1,10 +1,34 @@
-package org.javaee7.auth.jwt.simple.rest;
+package org.javaee7.jaxrs.simple.resource;
 
-import org.javaee7.auth.jwt.simple.domain.User;
-import org.javaee7.auth.jwt.simple.producer.LoggerProducer;
-import org.javaee7.auth.jwt.simple.utils.KeyGenerator;
-import org.javaee7.auth.jwt.simple.utils.PasswordUtils;
-import org.javaee7.auth.jwt.simple.utils.SimpleKeyGenerator;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+
+import java.io.File;
+import java.io.StringReader;
+import java.net.URI;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.javaee7.jaxrs.simple.application.MyApplication;
+import org.javaee7.jaxrs.simple.domain.User;
+import org.javaee7.jaxrs.simple.filter.JWTTokenNeeded;
+import org.javaee7.jaxrs.simple.filter.JWTTokenNeededFilter;
+import org.javaee7.jaxrs.simple.utils.KeyGenerator;
+import org.javaee7.jaxrs.simple.utils.LoggerProducer;
+import org.javaee7.jaxrs.simple.utils.PasswordUtils;
+import org.javaee7.jaxrs.simple.utils.SimpleKeyGenerator;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -19,28 +43,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.io.File;
-import java.io.StringReader;
-import java.net.URI;
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+
 
 @RunWith(Arquillian.class)
 @RunAsClient
-public class UserEndpointTest {
+public class UserResourceTest {
+
 
     // ======================================
     // =             Attributes             =
@@ -68,12 +78,16 @@ public class UserEndpointTest {
         // Import Maven runtime dependencies
         File[] files = Maven.resolver().loadPomFromFile("pom.xml")
                 .importRuntimeDependencies().resolve().withTransitivity().asFile();
-
-        return ShrinkWrap.create(WebArchive.class)
-                .addClasses(User.class, UserEndpoint.class)
-                .addClasses(PasswordUtils.class, KeyGenerator.class, SimpleKeyGenerator.class, LoggerProducer.class, UserApplicationConfig.class)
-                .addAsResource("META-INF/persistence-test.xml", "META-INF/persistence.xml")
+        
+    	return ShrinkWrap.create(WebArchive.class)
+                .addClasses(MyApplication.class)
+                .addClasses(GreetingResource.class,UserEndpoint.class)
+                .addClasses(JWTTokenNeededFilter.class,JWTTokenNeeded.class)
+                .addClasses(User.class)
+                .addClasses(PasswordUtils.class,LoggerProducer.class)
+                .addClasses(KeyGenerator.class,SimpleKeyGenerator.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addAsResource("META-INF/persistence-test.xml", "META-INF/persistence.xml")
                 .addAsLibraries(files);
     }
 
@@ -84,9 +98,11 @@ public class UserEndpointTest {
     @Before
     public void initWebTarget() {
         client = ClientBuilder.newClient();
-        userTarget = client.target(baseURL).path("api/users");
+        userTarget = client
+        		.register(JacksonJsonProvider.class)
+        		.target(baseURL).path("api").path("users");
     }
-
+    
     // ======================================
     // =            Test methods            =
     // ======================================
@@ -104,14 +120,13 @@ public class UserEndpointTest {
     }
 
     @Test
-    @InSequence(1)
     public void shouldGetAllUsers() throws Exception {
         Response response = userTarget.request(APPLICATION_JSON_TYPE).get();
         assertEquals(200, response.getStatus());
     }
 
     @Test
-    @InSequence(2)
+    @InSequence(1)
     public void shouldCreateUser() throws Exception {
         Response response = userTarget.request(APPLICATION_JSON_TYPE).post(Entity.entity(TEST_USER, APPLICATION_JSON_TYPE));
         assertEquals(201, response.getStatus());
@@ -119,7 +134,7 @@ public class UserEndpointTest {
     }
 
     @Test
-    @InSequence(3)
+    @InSequence(2)
     public void shouldGetAlreadyCreatedUser() throws Exception {
         Response response = userTarget.path(userId).request(APPLICATION_JSON_TYPE).get();
         assertEquals(200, response.getStatus());
@@ -129,7 +144,7 @@ public class UserEndpointTest {
     }
 
     @Test
-    @InSequence(4)
+    @InSequence(3)
     public void shouldRemoveUser() throws Exception {
         Response response = userTarget.path(userId).request(APPLICATION_JSON_TYPE).delete();
         assertEquals(204, response.getStatus());
@@ -137,6 +152,9 @@ public class UserEndpointTest {
         assertEquals(404, checkResponse.getStatus());
     }
 
+    
+
+    
     // ======================================
     // =           Private methods          =
     // ======================================
@@ -156,4 +174,6 @@ public class UserEndpointTest {
         StringReader stringReader = new StringReader(jsonString);
         return Json.createReader(stringReader);
     }
+    
 }
+

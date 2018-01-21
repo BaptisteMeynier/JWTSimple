@@ -1,9 +1,9 @@
-package org.javaee7.auth.jwt.simple.producer;
-
-import java.util.logging.Logger;
+package org.javaee7.jaxrs.simple.utils;
 
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
+import java.util.logging.Logger;
+
 
 public class LoggerProducer {
 

@@ -1,14 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.javaee7.auth.jwt</groupId>
-	<artifactId>jwtSimple</artifactId>
+	<groupId>org.javaee7.jaxrs</groupId>
+	<artifactId>simple</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-
-	<build>
-		<defaultGoal>clean package</defaultGoal>
-	</build>
 
 
 	<properties>
@@ -16,14 +12,27 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<version.j2ee>7.0</version.j2ee>
-		<version.jjwt>0.9.0</version.jjwt>
 		<version.org.jboss.arquillian>1.1.14.Final</version.org.jboss.arquillian>
 		<version.org.wildfly>8.2.1.Final</version.org.wildfly>
-		<version.junit>4.12</version.junit>
 		<version.resteasy>3.0.18.Final</version.resteasy>
-		<version.jersey>2.23.2</version.jersey>
-		<version.json>1.0.4</version.json>
+		<version.war.plugin>2.6</version.war.plugin>
+		<version.jjwt>0.9.0</version.jjwt>
 	</properties>
+
+	<build>
+		<defaultGoal>clean package</defaultGoal>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>${version.war.plugin}</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 
 
 	<dependencyManagement>
@@ -58,27 +67,6 @@
 			<artifactId>jjwt</artifactId>
 			<version>${version.jjwt}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxrs</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-client</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpcore</artifactId>
-			<version>4.4.8</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.2</version>
-		</dependency>
 
 		<!-- TEST -->
 		<dependency>
@@ -96,6 +84,21 @@
 			<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-client</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson2-provider</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish</groupId>
+			<artifactId>javax.json</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 
@@ -111,6 +114,12 @@
 					<groupId>org.wildfly</groupId>
 					<artifactId>wildfly-arquillian-container-managed</artifactId>
 					<version>${version.org.wildfly}</version>
+					<exclusions>
+						<exclusion>
+							<artifactId>jconsole</artifactId>
+							<groupId>sun.jdk</groupId>
+						</exclusion>
+					</exclusions>
 					<scope>test</scope>
 				</dependency>
 			</dependencies>
@@ -146,22 +155,14 @@
 							</execution>
 						</executions>
 					</plugin>
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.17</version>
+					</plugin>
 				</plugins>
 			</build>
 		</profile>
-		<!-- Arquillian WildFly remote profile -->
-		<profile>
-			<id>arq-widlfly-remote</id>
-			<dependencies>
-				<dependency>
-					<groupId>org.wildfly</groupId>
-					<artifactId>wildfly-arquillian-container-remote</artifactId>
-					<version>${version.org.wildfly}</version>
-					<scope>test</scope>
-				</dependency>
-			</dependencies>
-		</profile>
-
 	</profiles>
+
 
 </project>

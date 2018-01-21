@@ -1,4 +1,4 @@
-package org.javaee7.auth.jwt.simple.domain;
+package org.javaee7.jaxrs.simple.domain;
 
 
 import javax.persistence.Column;
@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.javaee7.auth.jwt.simple.utils.PasswordUtils;
+import org.javaee7.jaxrs.simple.utils.PasswordUtils;
 
 import java.util.Objects;
 import java.util.UUID;

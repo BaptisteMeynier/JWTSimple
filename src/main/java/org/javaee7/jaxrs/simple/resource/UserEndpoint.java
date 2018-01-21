@@ -1,4 +1,8 @@
-package org.javaee7.auth.jwt.simple.rest;
+package org.javaee7.jaxrs.simple.resource;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -10,20 +14,15 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.javaee7.auth.jwt.simple.domain.User;
-import org.javaee7.auth.jwt.simple.utils.KeyGenerator;
-import org.javaee7.auth.jwt.simple.utils.PasswordUtils;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import org.javaee7.jaxrs.simple.domain.User;
+import org.javaee7.jaxrs.simple.utils.KeyGenerator;
+import org.javaee7.jaxrs.simple.utils.PasswordUtils;
 
 import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
-
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -44,8 +43,6 @@ public class UserEndpoint {
     @Context
     private UriInfo uriInfo;
 
-    @Inject
-    private Logger logger;
 
     @Inject
     private KeyGenerator keyGenerator;
@@ -63,10 +60,7 @@ public class UserEndpoint {
     public Response authenticateUser(@FormParam("login") String login,
                                      @FormParam("password") String password) {
 
-    	
         try {
-
-            logger.info("#### login/password : " + login + "/" + password);
 
             // Authenticate the user using the credentials provided
             authenticate(login, password);
@@ -101,7 +95,6 @@ public class UserEndpoint {
                 .setExpiration(toDate(LocalDateTime.now().plusMinutes(15L)))
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
-        logger.info("#### generating token for a key : " + jwtToken + " - " + key);
         return jwtToken;
 
     }

@@ -1,4 +1,4 @@
-package org.javaee7.auth.jwt.simple.utils;
+package org.javaee7.jaxrs.simple.utils;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;

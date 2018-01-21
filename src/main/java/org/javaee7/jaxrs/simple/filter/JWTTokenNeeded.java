@@ -1,4 +1,4 @@
-package org.javaee7.auth.jwt.simple.rest.naming;
+package org.javaee7.jaxrs.simple.filter;
 
 import javax.ws.rs.NameBinding;
 import java.lang.annotation.Retention;
